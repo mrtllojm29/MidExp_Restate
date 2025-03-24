@@ -16,7 +16,7 @@ import { Card } from "@/components/Cards";
 import Filters from "@/components/Filters";
 import NoResults from "@/components/NoResults";
 
-import { getProperties } from "@/lib/appwrite";
+import { getProperties, seedProperties } from "@/lib/appwrite"; // Added `seedProperties`
 import { useAppwrite } from "@/lib/useAppwrite";
 
 const Explore = () => {
@@ -36,10 +36,19 @@ const Explore = () => {
   });
 
   useEffect(() => {
-    refetch({
-      filter: params.filter!,
-      query: params.query!,
-    });
+    const fetchAndSeedData = async () => {
+      const fetchedProperties = await getProperties({
+        filter: params.filter!,
+        query: params.query!,
+      });
+
+      if (!fetchedProperties || fetchedProperties.length === 0) {
+        await seedProperties(); // ✅ Seed properties if none exist
+        refetch(); // ✅ Refresh the list after seeding
+      }
+    };
+
+    fetchAndSeedData();
   }, [params.filter, params.query]);
 
   const handleCardPress = (id: string) => router.push(`/properties/${id}`);
