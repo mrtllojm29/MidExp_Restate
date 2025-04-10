@@ -23,17 +23,19 @@ import { useGlobalContext } from "@/lib/global-provider";
 import { getLatestProperties, getProperties } from "@/lib/appwrite";
 import seed from "@/lib/seed";
 
-seed();
+seed(); // Seeds the database with dummy data (for development/testing)
 
 const Home = () => {
   const { user } = useGlobalContext();
 
   const params = useLocalSearchParams<{ query?: string; filter?: string }>();
 
+  // Fetch latest properties using Appwrite hook
   const { data: latestProperties, loading: latestPropertiesLoading } = useAppwrite({
     fn: getLatestProperties,
   });
 
+  // Fetch filtered and searched properties
   const {
     data: properties,
     refetch,
@@ -45,9 +47,10 @@ const Home = () => {
       query: params.query!,
       limit: 6,
     },
-    skip: true,
+    skip: true, // Skip initial fetch, will trigger manually
   });
 
+  // Refetch properties when filter or query changes
   useEffect(() => {
     refetch({
       filter: params.filter!,
@@ -56,6 +59,7 @@ const Home = () => {
     });
   }, [params.filter, params.query]);
 
+  // Navigate to property detail screen when a card is pressed
   const handleCardPress = (id: string) => router.push(`/properties/${id}`);
 
   return (
@@ -105,6 +109,7 @@ const Home = () => {
                 </TouchableOpacity>
               </View>
 
+              {/* Show featured properties or loader or fallback if none */}
               {latestPropertiesLoading ? (
                 <ActivityIndicator size="large" className="text-primary-300" />
               ) : !latestProperties || latestProperties.length === 0 ? (

@@ -22,6 +22,7 @@ const propertyTypes = [
 
 const facilities = ["Laundry", "Parking", "Gym", "Wifi", "Pet-friendly"];
 
+// Utility function to get a random subset from an array
 function getRandomSubset<T>(array: T[], minItems: number, maxItems: number): T[] {
   if (minItems > maxItems) {
     throw new Error("minItems cannot be greater than maxItems");
@@ -33,6 +34,7 @@ function getRandomSubset<T>(array: T[], minItems: number, maxItems: number): T[]
   const subsetSize = Math.floor(Math.random() * (maxItems - minItems + 1)) + minItems;
   const arrayCopy = [...array];
 
+  // Shuffle array
   for (let i = arrayCopy.length - 1; i > 0; i--) {
     const randomIndex = Math.floor(Math.random() * (i + 1));
     [arrayCopy[i], arrayCopy[randomIndex]] = [arrayCopy[randomIndex], arrayCopy[i]];
@@ -41,11 +43,12 @@ function getRandomSubset<T>(array: T[], minItems: number, maxItems: number): T[]
   return arrayCopy.slice(0, subsetSize);
 }
 
+// Main seeding function to populate all collections with sample data
 async function seed() {
   try {
     console.log("Starting data seeding...");
 
-    // Check Appwrite Configuration
+    // Log config for confirmation
     console.log("Database ID:", config.databaseId);
     console.log("Agents Collection ID:", config.agentsCollectionId);
     console.log("Reviews Collection ID:", config.reviewsCollectionId);
@@ -57,7 +60,7 @@ async function seed() {
       return;
     }
 
-    // Clear existing data from all collections
+    // Clear existing documents from each collection
     for (const key in COLLECTIONS) {
       try {
         const collectionId = COLLECTIONS[key as keyof typeof COLLECTIONS];
@@ -79,7 +82,7 @@ async function seed() {
 
     console.log("Cleared all existing data.");
 
-    // Seed Agents
+    // Seed Agents collection with 5 agents
     const agents = [];
     for (let i = 1; i <= 5; i++) {
       try {
@@ -101,7 +104,7 @@ async function seed() {
     }
     console.log(`Seeded ${agents.length} agents.`);
 
-    // Seed Reviews
+    // Seed Reviews collection with 20 reviews
     const reviews = [];
     for (let i = 1; i <= 20; i++) {
       try {
@@ -124,7 +127,7 @@ async function seed() {
     }
     console.log(`Seeded ${reviews.length} reviews.`);
 
-    // Seed Galleries
+    // Seed Gallery collection with all gallery images
     const galleries = [];
     for (const image of galleryImages) {
       try {
@@ -142,7 +145,7 @@ async function seed() {
     }
     console.log(`Seeded ${galleries.length} galleries.`);
 
-    // Seed Properties
+    // Seed Properties collection with 20 properties
     for (let i = 1; i <= 20; i++) {
       try {
         const assignedAgent = agents[Math.floor(Math.random() * agents.length)];

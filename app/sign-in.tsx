@@ -11,14 +11,16 @@ import images from "@/constants/images";
 const Auth = () => {
   const { refetch, loading, isLogged } = useGlobalContext();
 
+  // If the user is already logged in, redirect them to the home page
   if (!loading && isLogged) return <Redirect href="/" />;
 
+  // Handles the Google login process
   const handleLogin = async () => {
-    const result = await login();
+    const result = await login(); // Call the login function from Appwrite
     if (result) {
-      refetch();
+      refetch(); // Refresh global context data after successful login
     } else {
-      Alert.alert("Error", "Failed to login");
+      Alert.alert("Error", "Failed to login"); // Show error if login fails
     }
   };
 
@@ -46,7 +48,7 @@ const Auth = () => {
           </Text>
 
           <TouchableOpacity
-            onPress={handleLogin}
+            onPress={handleLogin} // Trigger Google login on press
             className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5"
           >
             <View className="flex flex-row items-center justify-center">
